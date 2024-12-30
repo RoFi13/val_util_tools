@@ -115,3 +115,21 @@ def check_scene_for_joints():
         return False
 
     return True
+
+def delete_unknown_nodes():
+    """Attempt to delete all unknown nodes in Maya scene."""
+    unknown_nodes = cmds.ls(type="unknown")
+
+    for node in unknown_nodes:
+        if not "camera" in node or not "Camera" in node:
+            if cmds.lockNode(node, query=True, lock=True):
+                try:
+                    cmds.lockNode(node, lock=False)
+                    cmds.delete(node)
+                except ValueError:
+                    pass
+            else:
+                try:
+                    cmds.delete(node)
+                except ValueError:
+                    pass
